@@ -11,4 +11,5 @@ type ReceivedMessage struct {
     Interests       string `json:"interests"`
     StatusMessage   string `json:"status_message"`
     ProfilePicture  string `json:"profile_picture"`
+	Description string `json:"description"`
 }

@@ -29,7 +29,7 @@ func SubToQueue() {
     rabbitmqPass := os.Getenv("RABBITMQ_PASS")
     rabbitmqHost := os.Getenv("RABBITMQ_HOST")
     rabbitmqPort := os.Getenv("RABBITMQ_PORT")
-
+    
     connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", rabbitmqUser, rabbitmqPass, rabbitmqHost, rabbitmqPort)
     conn, err := amqp.Dial(connStr)
     failOnError(err, "Failed to connect to RabbitMQ")
@@ -72,8 +72,15 @@ func SubToQueue() {
                 continue
             }
 
-            if receivedMessage.Id == 0 {
-                log.Printf("Error: receivedMessage.Id is 0. Message: %s", d.Body)
+            // Validar el mensaje recibido
+            if !isValidMessage(receivedMessage) {
+                log.Printf("Invalid message: %s", d.Body)
+                continue
+            }
+
+            // Verificar si el campo Description existe
+            if receivedMessage.Description != "" {
+                log.Printf("Message contains Description, not sending to API: %s", d.Body)
                 continue
             }
 
@@ -102,4 +109,20 @@ func SubToQueue() {
 
     log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
     select {}
+}
+
+// Función para validar el mensaje recibido
+func isValidMessage(message models.ReceivedMessage) bool {
+    // Validar que el Id sea mayor que 0
+    if message.Id <= 0 {
+        return false
+    }
+
+    // Validar que el FullName no esté vacío
+    if message.FullName == "" {
+        return false
+    }
+
+    // Agrega más validaciones según tus necesidades
+    return true
 }
