@@ -8,7 +8,7 @@ import (
 )
 
 func SendMessageToAPI(message string) {
-    apiURL := "http://127.0.0.1:9090/v1/notifications/"
+    apiURL := "http://54.157.79.161:9090/v1/notifications/"
     
     // No necesitas convertir el mensaje a JSON nuevamente, ya es una cadena JSON
     jsonData := []byte(message)
